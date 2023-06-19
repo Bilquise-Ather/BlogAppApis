@@ -98,6 +98,7 @@ let login = (req, res, next) => {
 }
 
 let logOut = (req, res, next) => {
+    console.log(req.user);
     return blogManager
         .logOut(req.user)
         .then(data => {

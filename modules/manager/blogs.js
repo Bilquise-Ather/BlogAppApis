@@ -13,7 +13,9 @@ let _ = require("lodash"),
     ObjectId = require('mongoose').Types.ObjectId,
 
     validator = require('validator'),
-    md5 = require('md5');
+    md5 = require('md5'),
+    jwt = require('jsonwebtoken');
+
 
 
 let blogs = async (req) => {
@@ -119,7 +121,8 @@ let login = async (body) => {
     if (!user) {
         throw new BadRequestError("Either username or password is invalid");
     }
-    let accessToken = md5(Date.now() + body.email);
+    let accessToken = jwt.sign({ email: body.email }, 'your_secret_key', { expiresIn: '1h' });
+
     if (user) {
         await UserRegisterModal
             .updateOne({ _id: user._id }, { $set: { fpToken: accessToken, fpTokenCreatedAt: new Date() } })
@@ -131,6 +134,7 @@ let login = async (body) => {
         accessToken: accessToken,
         user: user,
     };
+
 }
 
 
